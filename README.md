@@ -1,2 +1,2 @@
 # PythonProjects
-Network projects created using udemy training videos
+Network projects created while self-learning
