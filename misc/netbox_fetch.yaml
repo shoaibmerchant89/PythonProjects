@@ -1,0 +1,103 @@
+---
+- name: Testing NetBox
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    netbox_token: c8dd76c7a5a0891326a7001692db9b5ef859495b
+
+  tasks:
+
+    - name: get config from netbox
+      uri:
+        url: http://192.168.0.30:8000/api/dcim/devices
+        method: GET
+        headers:
+         Authorization: 'Token {{ netbox_token }}'
+        body_format: json
+        body:
+          primary_ip:
+#          username: root
+#          password: Labrat@123
+        validate_certs: no
+#        status_code: 200
+      register: test
+
+    - debug:
+        msg: "{{ test.json }}"
+
+    - name: Retrieve CMCS group
+      set_fact:
+        CMCS_GROUP: 'EMEA_CAMPUS'
+
+    - debug:
+        msg: "{{ CMCS_GROUP }}"
+
+    - name: Retrieve CMCS group for EMEA_ALL_CAMPUS
+      when: CMCS_GROUP == 'EMEA_CAMPUS'
+      set_fact:
+        aaa_servers: 'TBD'
+        logging_servers: 'TBD'
+        snmp_servers: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_CAMPUS' && status.label=='Active'].primary_ip.address\") | regex_replace('(/24)$','') }}"
+        ntp_servers: 'TBD'
+
+    - name: Retrieve CMCS group for EMEA_GLO_DMZ
+      when: CMCS_GROUP == 'EMEA_GLO_DMZ'
+      set_fact:
+        aaa_servers: 'TBD'
+        logging_servers: 'TBD'
+        snmp_servers: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_GLO_DMZ' && status.label=='Active'].primary_ip.address\") }}"
+        ntp_servers: 'TBD'
+
+    - name: Retrieve CMCS group for EMEA_GLO_EDGECONNECT
+      when: CMCS_GROUP == 'EMEA_GLO_EDGECONNECT'
+      set_fact:
+        aaa_servers: 'TBD'
+        logging_servers: 'TBD'
+        snmp_servers: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_GLO_EDGECONNECT' && status.label=='Active'].primary_ip.address\") }}"
+        ntp_servers: 'TBD'
+
+    - name: Retrieve CMCS group for EMEA_SLO_DMZ
+      when: CMCS_GROUP == 'EMEA_SLO_DMZ'
+      set_fact:
+        aaa_servers: 'TBD'
+        logging_servers: 'TBD'
+        snmp_servers: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_SLO_DMZ' && status.label=='Active'].primary_ip.address\") }}"
+        ntp_servers: 'TBD'
+
+    - name: Retrieve CMCS group for EMEA_SLO_EDGECONNECT
+      when: CMCS_GROUP == 'EMEA_SLO_EDGECONNECT'
+      set_fact:
+        aaa_servers: 'TBD'
+        logging_servers: 'TBD'
+        snmp_servers: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_SLO_EDGECONNECT' && status.label=='Active'].primary_ip.address\") }}"
+        ntp_servers: 'TBD'
+
+#
+#
+#    - set_fact:
+#        EMEA_ALL_CAMPUS:
+#          AAA_SERVER: 'TBD'
+#          LOGGING_SERVER: 'TBD'
+#          SNMP_SERVER: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_ALL_CAMPUS' && status.label=='Active'].primary_ip.address\") }}"
+#          NTP_SERVER: 'TBD'
+#        EMEA_SLO_DMZ:
+#          AAA_SERVER: 'TBD'
+#          LOGGING_SERVER: 'TBD'
+#          SNMP_SERVER: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_SLO_DMZ' && status.label=='Active'].primary_ip.address\") }}"
+#        EMEA_GLO_DMZ:
+#          AAA_SERVER: 'TBD'
+#          LOGGING_SERVER: 'TBD'
+#          SNMP_SERVER: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_GLO_DMZ' && status.label=='Active'].primary_ip.address\") }}"
+#        EMEA_SLO_EDGECONNECT:
+#          AAA_SERVER: 'TBD'
+#          LOGGING_SERVER: 'TBD'
+#          SNMP_SERVER: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_SLO_EDGECONNECT' && status.label=='Active'].primary_ip.address\") }}"
+#        EMEA_GLO_EDGECONNECT:
+#          AAA_SERVER: 'TBD'
+#          LOGGING_SERVER: 'TBD'
+#          SNMP_SERVER: "{{ test.json.results | json_query(\"[?device_role.name=='snmp_server' && site.name=='EMEA_GLO_EDGECONNECT' && status.label=='Active'].primary_ip.address\") }}"
+#
+    - debug:
+        msg: "{{ snmp_servers | map('regex_replace', '(/24)$', '') | list }}"
+        #| regex_replace('(/24)$','')
