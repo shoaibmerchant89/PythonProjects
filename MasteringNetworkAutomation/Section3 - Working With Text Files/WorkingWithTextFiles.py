@@ -70,11 +70,11 @@ with open('testcsv.csv', 'w', newline='') as f:
     for x in range(1,101):
         writer.writerow([x, x**2, x**3, x**4])
 
-#with open('airtravel.csv', 'r+') as f:
-#    data = {}
-#    dictreader = csv.DictReader(f)
-#    for row in dictreader:
-#        print(row)
+with open('airtravel.csv', 'r+') as f:
+    data = {}
+    dictreader = csv.DictReader(f)
+    for row in dictreader:
+        print(row)
 
 # with open('passwd.csv', 'r+') as f:
 #     reader = csv.reader(f, delimiter=':', lineterminator='\n')

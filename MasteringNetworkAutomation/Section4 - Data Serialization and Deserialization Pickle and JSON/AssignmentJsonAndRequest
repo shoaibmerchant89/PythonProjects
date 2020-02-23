@@ -1,0 +1,42 @@
+# import libraries and check out the official python docs for the documentation for these libraries
+
+import json
+import requests
+import csv
+
+response = requests.get('https://jsonplaceholder.typicode.com/todos')
+
+# Store the reponse.text in a python object. .text is a method that stores the response payload.
+todos = json.loads(response.text)
+print(todos)
+print(type(todos))
+
+'''
+The python object 'todos' is a list, so each element can be iterated and within each element check if the 'task' key is 
+equal to completed. If true, then print that element/task.
+'''
+# for task in todos:
+#     if task['completed'] == False:
+#         print(task)
+
+# Requests/REST API coding challenge
+
+response = requests.get('https://jsonplaceholder.typicode.com/users')
+users = json.loads(response.text)
+print(users)
+
+with open('testcsv.csv', 'w+', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['Name', 'City', 'GEO Location', 'Company'])
+
+    for user in users:
+        name = user['name']
+        city = user['address']['city']
+        lat = user['address']['geo']['lat']
+        lng = user['address']['geo']['lng']
+        # geo = '(' + lat + ',' + lng + ')'
+        geo = f'({lat},{lng})'
+        company = user['company']['name']
+
+        csvdata = (name,city,geo,company)
+        writer.writerow(csvdata)
