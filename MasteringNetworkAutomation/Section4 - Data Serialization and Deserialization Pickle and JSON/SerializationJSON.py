@@ -1,12 +1,16 @@
 # Import python library. Use the official python docs documentation for the json library.
-
 import json
 
+
+# some python dicts to test dict to json encoding and decoding
 friends1 = {"Shoaib": (30, "Pune", 32324356), "Heena": [31, "Kharadi", 78864823]}
 friends2 = {"Arzoo": [26, "Mumbai", 32324356], "Rizwan": [38, "Borivali", 78864823]}
 friends3 = {"Naaz": [52, "Kalina", 32324356], "Shanu": [58, "Dongri", 78864823]}
+
+
+# add the above dists to a list for testing some nested data
 friends = (friends1,friends2,friends3)
-enemies = 'No enemies'
+
 
 # json.dump - write and encode dict objects into a json file
 with open('friends.json', 'w+') as f:
